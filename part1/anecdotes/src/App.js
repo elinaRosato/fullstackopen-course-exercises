@@ -27,30 +27,46 @@ const App = () => {
   
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+  const [max, setMax] = useState(0)
 
-  function getRandomInt(min, max) {
+  const  getRandomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
   }
 
+
   const changeAnecdote = () => {
     const newSelected = getRandomInt(0, anecdotes.length)
     setSelected(newSelected)
   }
+
   const voteAnecdote = () => {
     const newVotes = [...votes]
-    newVotes[selected] = votes[selected] + 1
+    newVotes[selected] += 1
     setVotes(newVotes)
-    console.log(newVotes)
+
+    //update most voted anecdote
+    const  maxVotes = newVotes.reduce((a, b) => Math.max(a, b), -Infinity);
+    const mostVotedAnecdote = newVotes.indexOf(maxVotes)
+    setMax(mostVotedAnecdote)
   }
 
   return (
     <>
-      <Anecdote text={anecdotes[selected]} />
-      <Votes votes={votes[selected]} />
-      <Button handleClick={voteAnecdote} text="vote" />
-      <Button handleClick={changeAnecdote} text="next anecdote" />
+      <div>
+        <h1>Anecdote of the day</h1>
+        <Anecdote text={anecdotes[selected]} />
+        <Votes votes={votes[selected]} />
+        <Button handleClick={voteAnecdote} text="vote" />
+        <Button handleClick={changeAnecdote} text="next anecdote" />
+      </div>
+
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <Anecdote text={anecdotes[max]} />
+        <Votes votes={votes[max]} />
+      </div>
     </>
   )
 }
