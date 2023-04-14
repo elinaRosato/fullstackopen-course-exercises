@@ -26,18 +26,20 @@ const App = () => {
   ]
   
   const [selected, setSelected] = useState(0)
-  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+  const [votes, setVotes] = useState(anecdotes.map(_ => 0))
   const [max, setMax] = useState(0)
 
-  const  getRandomInt = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
+  const  getRandomAnecdote = () => {
+    while (true) {
+      const randomAnecdote = Math.floor(Math.random() * anecdotes.length)
+      if (randomAnecdote !== selected) {
+        return randomAnecdote
+      }
+    }
   }
 
-
   const changeAnecdote = () => {
-    const newSelected = getRandomInt(0, anecdotes.length)
+    const newSelected = getRandomAnecdote()
     setSelected(newSelected)
   }
 
@@ -58,12 +60,14 @@ const App = () => {
         <h1>Anecdote of the day</h1>
         <Anecdote text={anecdotes[selected]} />
         <Votes votes={votes[selected]} />
-        <Button handleClick={voteAnecdote} text="vote" />
-        <Button handleClick={changeAnecdote} text="next anecdote" />
+        <div>
+          <Button handleClick={voteAnecdote} text="vote" />
+          <Button handleClick={changeAnecdote} text="next anecdote" />
+        </div>
       </div>
 
       <div>
-        <h1>Anecdote with most votes</h1>
+        <h2>Anecdote with most votes</h2>
         <Anecdote text={anecdotes[max]} />
         <Votes votes={votes[max]} />
       </div>
