@@ -4,6 +4,10 @@ const Anecdote = ({ text }) => (
   <p>{text}</p>
 )
 
+const Votes = ({ votes }) => (
+  <p>Has {votes} votes</p>
+)
+
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 
@@ -22,21 +26,30 @@ const App = () => {
   ]
   
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0, 0])
 
-  function getRandomIntInclusive(min, max) {
+  function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(Math.random() * (max - min) + min);
   }
 
   const changeAnecdote = () => {
-    const newSelected = getRandomIntInclusive(0, anecdotes.length)
+    const newSelected = getRandomInt(0, anecdotes.length)
     setSelected(newSelected)
+  }
+  const voteAnecdote = () => {
+    const newVotes = [...votes]
+    newVotes[selected] = votes[selected] + 1
+    setVotes(newVotes)
+    console.log(newVotes)
   }
 
   return (
     <>
       <Anecdote text={anecdotes[selected]} />
+      <Votes votes={votes[selected]} />
+      <Button handleClick={voteAnecdote} text="vote" />
       <Button handleClick={changeAnecdote} text="next anecdote" />
     </>
   )
