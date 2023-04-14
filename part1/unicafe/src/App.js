@@ -9,6 +9,13 @@ const Button = ({ text, handleClick }) => (
 )
 
 const Statistics = ({ good, neutral, bad, total, average, positive }) => {
+  if (total == 0) {
+    return (
+      <div>
+        <p>No feedback given</p>
+      </div>
+    )
+  }
   return (
     <div>
       <p>good {good}</p>
@@ -50,10 +57,7 @@ const App = () => {
       setAverage((good-updatedBad)/updatedTotal)
       setPositive(good/updatedTotal)
     }
-    console.log(total)
     setTotal(updatedTotal)
-    console.log(total)
-    console.log('average: ', average)
   }
 
   return (
