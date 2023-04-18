@@ -10,13 +10,12 @@ const App = () => {
     { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
     { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
+  const [newPerson, setNewPerson] = useState({ name: '', number: ''})
   const [newFilter, setNewFilter] = useState('')
 
-  const handleNameChange = (event) => setNewName(event.target.value)
+  const handleNameChange = (event) => setNewPerson({...newPerson, name: event.target.value})
   
-  const handleNumberChange = (event) => setNewNumber(event.target.value)
+  const handleNumberChange = (event) => setNewPerson({...newPerson, number: event.target.value})
   
   const handleFilterChange = (event) => setNewFilter(event.target.value)
 
@@ -24,18 +23,13 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    const found = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    const found = persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
 
     if (found) {
-      alert(`${newName} is already added to phonebook`)
+      alert(`${newPerson.name} is already added to phonebook`)
     } else {
-      const personObject = {
-        name: newName,
-        number: newNumber
-      }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      setPersons(persons.concat(newPerson))
+      setNewPerson({ name: '', number: ''})
     }
     
   }
@@ -46,7 +40,7 @@ const App = () => {
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <div>
         <h2>Add a new contact</h2>
-        <AddPerson addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
+        <AddPerson addPerson={addPerson} newPerson={newPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
       </div>
       <div>
         <h2>Numbers</h2>
