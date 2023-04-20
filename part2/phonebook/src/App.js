@@ -44,11 +44,12 @@ const App = () => {
   }
 
   const deletePerson = (event) => {
-    event.preventDefault()
-    const personId = event.target.id
-    personService.errase(personId).then(
-      setPersons(persons.filter((person) => person.id != personId ))
-    )
+    if ( window.confirm(`Delete ${event.target.name} ?`) ) {
+      const personId = event.target.id
+      personService.errase(personId).then(
+        setPersons(persons.filter((person) => person.id != personId ))
+      )
+    }
   }
 
   return (
