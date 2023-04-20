@@ -43,6 +43,14 @@ const App = () => {
     }
   }
 
+  const deletePerson = (event) => {
+    event.preventDefault()
+    const personId = event.target.id
+    personService.errase(personId).then(
+      setPersons(persons.filter((person) => person.id != personId ))
+    )
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -53,7 +61,7 @@ const App = () => {
       </div>
       <div>
         <h2>Numbers</h2>
-        <ContactList personsToShow={personsToShow}/>
+        <ContactList personsToShow={personsToShow} deletePerson={deletePerson}/>
       </div>
     </div>
   )
