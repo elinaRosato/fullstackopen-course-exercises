@@ -10,7 +10,7 @@ const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newPerson, setNewPerson] = useState({ name: '', number: ''})
   const [newFilter, setNewFilter] = useState('')
-  const [message, setMessage] = useState(null)
+  const [message, setMessage] = useState({ content: null, type: null})
 
   useEffect(() => {
     personService
@@ -39,10 +39,17 @@ const App = () => {
         .update(found.id, changedPerson)
         .then(returnedPerson => {
           setPersons(persons.map(person => person.id !== found.id ? person : returnedPerson))
-          setMessage(`Changed ${returnedPerson.name}'s number to ${returnedPerson.number}`)
+          setMessage({content: `Changed ${returnedPerson.name}'s number to ${returnedPerson.number}`, type: 'success'})
           setNewPerson({ name: '', number: ''})
           setTimeout(() => {
-            setMessage(null)
+            setMessage({ ...message, content: null})
+          }, 3000)
+        })
+        .catch(error => {
+          setMessage({ content: `${found.name} was already deleted from server, please create a new contact`, type: 'error'})
+          setPersons(persons.filter((person) => person.id !== found.id ))
+          setTimeout(() => {
+            setMessage({ ...message, content: null})
           }, 3000)
         })
       }
@@ -51,10 +58,10 @@ const App = () => {
       .create(newPerson)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        setMessage(`Added ${returnedPerson.name}`)
+        setMessage({ content: `Added ${returnedPerson.name}`, type: 'success'})
         setNewPerson({ name: '', number: ''})
         setTimeout(() => {
-          setMessage(null)
+          setMessage({ ...message, content: null})
         }, 3000)
       })
     }
@@ -63,9 +70,18 @@ const App = () => {
   const deletePerson = (event) => {
     if ( window.confirm(`Delete ${event.target.name} ?`) ) {
       const personId = event.target.id
-      personService.errase(personId).then(
+      personService
+      .errase(personId)
+      .then(
         setPersons(persons.filter((person) => Number(person.id) !== Number(personId) ))
       )
+      .catch(error => {
+        setMessage({ content: `${event.target.name} was already deleted from server`, type: 'error'})
+        setPersons(persons.filter((person) => Number(person.id) !== Number(personId) ))
+        setTimeout(() => {
+          setMessage({ ...message, content: null})
+        }, 3000)
+      })
     }
   }
 
