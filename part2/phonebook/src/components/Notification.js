@@ -11,12 +11,6 @@ const Notification = ({ message }) => {
     padding: 10,
     margin: 10
   }
-  const successStyle = {
-    color: 'green',
-  }
-  const errorStyle = {
-    color: 'red',
-  }
   return (
     <div style={notificationStyle}>
       {message.content}
