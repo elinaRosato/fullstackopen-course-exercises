@@ -1,6 +1,8 @@
 import CountryInfo from './CountryInfo'
+import SearchOption from './SearchOption'
 
-const SearchAnswer = ({ matchedCountries }) => {
+const SearchAnswer = ({ matchedCountries, selectCountry }) => {
+
   if (matchedCountries.length > 10){
     return (
       <p>Too many matches, specify another filter</p>
@@ -14,7 +16,7 @@ const SearchAnswer = ({ matchedCountries }) => {
     return (
       <ul>
         {matchedCountries.map(country => 
-          <li key={country.cca3}>{country.name.common}</li>
+          <SearchOption key={country.cca3} country={country} selectCountry={selectCountry}/>
         )}
       </ul>
     )
