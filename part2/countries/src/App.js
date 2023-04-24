@@ -1,41 +1,40 @@
 import { useState, useEffect } from 'react'
-import countryService  from './services/countries'
+import getAll  from './services/countries'
 
 import SearchAnswer from './components/SearchAnswer'
+import FilterCountry from './components/FilterCountry'
+
 
 const App = () => {
-  const [search, setSearch] = useState('')
-
   const [countries, setCountries] = useState([])
+  const [newSearch, setNewSearch] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState()
 
   useEffect(() => {
-    countryService
-    .getAll()
-    .then(initialCountries => {
-      setCountries(initialCountries)
-    })
+    getAll().then(initialCountries => setCountries(initialCountries))
 }, [])
 
-  const handleChange = (event) => {
-    setSearch(event.target.value)
+  const handleSearchChange = (event) => {
+    setNewSearch(event.target.value)
+    setSelectedCountry()
+    console.log('newSearch: ', event.target.value)
   }
-
-  const matchedCountries = (countries.length === 0) ? countries : countries.filter( country => country.name.common.toLowerCase().includes(search.toLowerCase()) )
 
   const selectCountry = (event) => {
-    const selectedCountry = event.target.getAttribute("selectedCountry")
-    setCountries(countries.filter( country => country.name.common === selectedCountry ))
+    console.log(event.target.value)
+    const selected = countries.filter( country => country.name.common === event.target.value)
+    setSelectedCountry(selected[0])
+    console.log('show: ', selected[0])
   }
 
+  
   return (
-  <div>
-    choose a country: <input value={search} onChange={handleChange} />
-    {(matchedCountries.length === 0) ? 
-      <p>Couldn't find any match.</p> :
-      <SearchAnswer matchedCountries={matchedCountries} selectCountry={selectCountry}/>
-    }
-    
-  </div>
-)}
+    <div>
+      <FilterCountry newSearch={newSearch} handleSearchChange={handleSearchChange} />
+      <br />
+      <SearchAnswer newSearch={newSearch} countries={countries} selectedCountry={selectedCountry} selectCountry={selectCountry} />
+    </div>
+  )
+}
 
 export default App

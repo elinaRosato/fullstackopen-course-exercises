@@ -6,6 +6,4 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const countryService = { getAll }
-
-export default countryService
+export default getAll
