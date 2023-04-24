@@ -17,14 +17,11 @@ const App = () => {
   const handleSearchChange = (event) => {
     setNewSearch(event.target.value)
     setSelectedCountry()
-    console.log('newSearch: ', event.target.value)
   }
 
   const selectCountry = (event) => {
-    console.log(event.target.value)
     const selected = countries.filter( country => country.name.common === event.target.value)
     setSelectedCountry(selected[0])
-    console.log('show: ', selected[0])
   }
 
   
