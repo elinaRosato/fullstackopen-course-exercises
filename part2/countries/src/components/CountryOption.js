@@ -6,7 +6,7 @@ const CountryOption = ({ country, selectCountry }) => {
   return (
     <div>
       <li style={inlineStyle}>{country.name.common} </li>
-      <button style={inlineStyle} onClick={selectCountry} value={country.name.common}>Show</button>
+      <button style={inlineStyle} onClick={() => selectCountry(country.name.common)} value={country.name.common}>Show</button>
     </div>
   )
 }

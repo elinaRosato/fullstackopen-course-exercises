@@ -3,7 +3,7 @@ import React from "react"
 import CountryOption from './CountryOption'
 import CountryInfo from "./CountryInfo"
 
-const SearchAnswer = ({ newSearch, countries, selectedCountry, selectCountry }) => {
+const SearchAnswer = ({ newSearch, selectCountry, countries }) => {
 
   const matches = countries.filter( country => 
     country.name.common.toLowerCase().includes(newSearch.toLowerCase())
@@ -15,19 +15,9 @@ const SearchAnswer = ({ newSearch, countries, selectedCountry, selectCountry }) 
     )
   }
 
-  if (selectedCountry !== undefined) {
+  if (matches.length === 1) {
     return (
-      <CountryInfo country={selectedCountry}  />
-    )
-  }
-
-  if (matches.length > 1) {
-    return (
-      <ul>
-        {matches.map(country => 
-          <CountryOption key={country.cca3} country={country} selectCountry={selectCountry}/>
-        )}
-      </ul>
+      <CountryInfo country={matches[0]}  />
     )
   }
 
@@ -38,10 +28,13 @@ const SearchAnswer = ({ newSearch, countries, selectedCountry, selectCountry }) 
   }
 
   return (
-    <CountryInfo country={matches[0]} />
+    <ul>
+      {matches.map(country => 
+        <CountryOption key={country.cca3} country={country} selectCountry={selectCountry}/>
+      )}
+    </ul>
   )
 
-  
 }
 
 export default SearchAnswer
