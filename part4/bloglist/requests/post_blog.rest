@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "How to create a Node App in 10 easy steps",
+    "author": "Mailen Sanchez",
+    "url": "www.howtocreateanodeappin10easysteps.com",
+    "likes": 3
+}
