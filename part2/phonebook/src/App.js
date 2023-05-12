@@ -34,7 +34,7 @@ const App = () => {
 
     if (found) {
       if ( window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`) ) {
-	      const changedPerson = { ...found, number: newPerson.number }
+        const changedPerson = { ...found, number: newPerson.number }
         personService
         .update(found.id, changedPerson)
         .then(returnedPerson => {
@@ -46,8 +46,7 @@ const App = () => {
           }, 3000)
         })
         .catch(error => {
-          setMessage({ content: `${found.name} was already deleted from server, please create a new contact`, type: 'error'})
-          setPersons(persons.filter((person) => person.id !== found.id ))
+          setMessage({ content: `Person validation failed: ${error.response.data.error}`})
           setTimeout(() => {
             setMessage({ ...message, content: null})
           }, 3000)
@@ -64,6 +63,12 @@ const App = () => {
           setMessage({ ...message, content: null})
         }, 3000)
       })
+      .catch(error => {
+        setMessage({ content: `Person validation failed: ${error.response.data.error}`})
+        setTimeout(() => {
+          setMessage({ ...message, content: null})
+        }, 3000)
+      })
     }
   }
 
@@ -73,11 +78,11 @@ const App = () => {
       personService
       .errase(personId)
       .then(
-        setPersons(persons.filter((person) => Number(person.id) !== Number(personId) ))
+        setPersons(persons.filter((person) => person.id !== personId ))
       )
       .catch(error => {
         setMessage({ content: `${event.target.name} was already deleted from server`, type: 'error'})
-        setPersons(persons.filter((person) => Number(person.id) !== Number(personId) ))
+        setPersons(persons.filter((person) => person.id !== personId ))
         setTimeout(() => {
           setMessage({ ...message, content: null})
         }, 3000)
