@@ -115,6 +115,9 @@ test('if the title property is missing, it responds to the request with status c
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+
+  const response = await api.get('/api/blogs')
+  expect(response.body).toHaveLength(initialBlogs.length)
 })
 
 test('if the url property is missing, it responds to the request with status code 400 Bad Request', async () => {
@@ -128,6 +131,9 @@ test('if the url property is missing, it responds to the request with status cod
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+
+  const response = await api.get('/api/blogs')
+  expect(response.body).toHaveLength(initialBlogs.length)
 })
 
 afterAll(async () => {
