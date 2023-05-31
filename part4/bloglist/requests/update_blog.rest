@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/5a422a851b54a676234d17f7
+Content-Type: application/json
+
+{
+    "title": "How to create a Computer Game in 10 easy steps",
+    "author": "Elina Rosato",
+    "url": "www.gamedeveasy.com",
+    "likes": 8
+}

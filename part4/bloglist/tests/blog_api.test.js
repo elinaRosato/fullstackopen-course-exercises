@@ -173,6 +173,54 @@ describe('deletion of a new blog', () => {
   })
 })
 
+describe('update of an existing blog', () => {
+  test('succeeds with status code 200 if id is valid', async () => {
+    const blogsAtStart = await api.get('/api/blogs')
+    const blogToUpdate = blogsAtStart.body[0]
+    const replaceWith = {
+      title: 'Updated blog',
+      author: 'Someone else',
+      url:'http://www.helloworld.edu/',
+      likes: 4
+    }
+  
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(replaceWith)
+      .expect(200)
+  
+    const blogsAtEnd = await api.get('/api/blogs')
+    expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length)
+
+    const titles = blogsAtEnd.body.map(r => r.title)
+    expect(titles).not.toContain(blogToUpdate.title)
+    expect(titles).toContain(replaceWith.title)
+  })
+
+  test('fails with status code 400 if id is invalid', async () => {
+    const blogsAtStart = await api.get('/api/blogs')
+    const blogToUpdate = {...blogsAtStart.body[0], id: 1234}
+    const replaceWith = {
+      title: 'Updated blog',
+      author: 'Someone else',
+      url:'http://www.helloworld.edu/',
+      likes: 4
+    }
+  
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(replaceWith)
+      .expect(400)
+  
+    const blogsAtEnd = await api.get('/api/blogs')
+    expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length)
+
+    const titles = blogsAtEnd.body.map(r => r.title)
+    expect(titles).toContain(blogToUpdate.title)
+    expect(titles).not.toContain(replaceWith.title)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
