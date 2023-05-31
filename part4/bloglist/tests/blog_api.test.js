@@ -178,7 +178,6 @@ describe('update of an existing blog', () => {
     const blogsAtStart = await api.get('/api/blogs')
     const blogToUpdate = blogsAtStart.body[0]
     const replaceWith = {
-      title: 'Updated blog',
       author: 'Someone else',
       url:'http://www.helloworld.edu/',
       likes: 4
@@ -192,16 +191,33 @@ describe('update of an existing blog', () => {
     const blogsAtEnd = await api.get('/api/blogs')
     expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length)
 
-    const titles = blogsAtEnd.body.map(r => r.title)
-    expect(titles).not.toContain(blogToUpdate.title)
-    expect(titles).toContain(replaceWith.title)
+    const originalContents = {
+      title: blogToUpdate.title, 
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: blogToUpdate.likes
+    }
+    const contentsAtEnd = blogsAtEnd.body.map(r => ({
+      title: r.title, 
+      author: r.author,
+      url: r.url,
+      likes: r.likes
+    }))
+
+    const contentsExpected = {
+      title: replaceWith.title || originalContents.title, 
+      author: replaceWith.author || originalContents.author,
+      url: replaceWith.url || originalContents.url,
+      likes: replaceWith.likes || originalContents.likes
+    }
+    expect(contentsAtEnd).not.toContain(originalContents)
+    expect(contentsAtEnd).toContainEqual(contentsExpected)
   })
 
   test('fails with status code 400 if id is invalid', async () => {
     const blogsAtStart = await api.get('/api/blogs')
     const blogToUpdate = {...blogsAtStart.body[0], id: 1234}
     const replaceWith = {
-      title: 'Updated blog',
       author: 'Someone else',
       url:'http://www.helloworld.edu/',
       likes: 4
@@ -215,9 +231,27 @@ describe('update of an existing blog', () => {
     const blogsAtEnd = await api.get('/api/blogs')
     expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length)
 
-    const titles = blogsAtEnd.body.map(r => r.title)
-    expect(titles).toContain(blogToUpdate.title)
-    expect(titles).not.toContain(replaceWith.title)
+    const originalContents = {
+      title: blogToUpdate.title, 
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: blogToUpdate.likes
+    }
+    const contentsAtEnd = blogsAtEnd.body.map(r => ({
+      title: r.title, 
+      author: r.author,
+      url: r.url,
+      likes: r.likes
+    }))
+
+    const contentsExpected = {
+      title: replaceWith.title || originalContents.title, 
+      author: replaceWith.author || originalContents.author,
+      url: replaceWith.url || originalContents.url,
+      likes: replaceWith.likes || originalContents.likes
+    }
+    expect(contentsAtEnd).toContainEqual(originalContents)
+    expect(contentsAtEnd).not.toContain(contentsExpected)
   })
 })
 
