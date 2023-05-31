@@ -1,8 +1,35 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-
 const api = supertest(app)
+const Blog = require('../models/blog')
+
+const initialBlogs = [
+  {
+    _id: '5a422a851b54a676234d17f7',
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7,
+    __v: 0
+  },
+  {
+    _id: '5a422aa71b54a676234d17f8',
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5,
+    __v: 0
+  }
+]
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  let blogObject = new Blog(initialBlogs[0])
+  await blogObject.save()
+  blogObject = new Blog(initialBlogs[1])
+  await blogObject.save()
+})
 
 test('blogs are returned as json', async () => {
   await api
@@ -11,16 +38,37 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test('there are two notes', async () => {
+test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
 
-  expect(response.body).toHaveLength(2)
+  expect(response.body).toHaveLength(initialBlogs.length)
 })
 
-test('the first note is about HTTP methods', async () => {
+test('a specific blog is within the returned blogs', async () => {
   const response = await api.get('/api/blogs')
 
-  expect(response.body[0].content).toBe('HTML is easy')
+  const titles = response.body.map(r => r.title)
+  expect(titles).toContain('React patterns')
+})
+
+test('the unique identifier property of the blog posts is named id', async () => {
+  const newBlog = {
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  console.log(response.body)
+  console.log(response.body.id)
+
+  expect(response.body.id).toBeDefined()
 })
 
 afterAll(async () => {
