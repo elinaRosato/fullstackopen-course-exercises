@@ -65,10 +65,26 @@ test('the unique identifier property of the blog posts is named id', async () =>
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  console.log(response.body)
-  console.log(response.body.id)
-
   expect(response.body.id).toBeDefined()
+})
+
+test('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
+  const newBlog = {
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7
+  }
+
+  const postedBlog = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  expect(response.body).toHaveLength(initialBlogs.length + 1)
+  expect(postedBlog.body.title).toBe('React patterns')
 })
 
 afterAll(async () => {
