@@ -104,6 +104,32 @@ test('if the likes property is missing from the request, it will default to the 
   expect(response.body.likes).toBe(0)
 })
 
+test('if the title property is missing, it responds to the request with status code 400 Bad Request', async () => {
+  const newBlog = {
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('if the url property is missing, it responds to the request with status code 400 Bad Request', async () => {
+  const newBlog = {
+    title: 'React patterns',
+    author: 'Michael Chan',
+    likes: 7
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
